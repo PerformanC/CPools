@@ -1,71 +1,63 @@
 # CPools
 
-CPools is an easy, light-weight and fast C thread pool library, using a cross-platform thread library.
+Fast and easy C89 thread pool library, using a [cross-platform threading library](https://github.com/PerformanC/CThreads).
 
 ## Features
 
 - Cross-platform
 - No dynamic memory allocation
-- Simple API
+- C89 compatible
 
-## Notes
+> [!NOTE]
+> This library is experimental, may have bugs and may not work as expected.
 
-This library uses a single thread for now, due to be still WIP, although it is already usable, but won't have support for that, for now.
+> [!WARNING]
+> `pthread` or `Windows Threads` may use dynamic memory allocation underneath.
 
-And cross-platform hasn't been tested yet, but it should work on any platform that supports pthreads.
-If you find *any* issue on Windows, create an issue on GitHub.
+## Installation
+
+### 1. Copy the files
+
+Copy both cpools.h and cthreads.h to your project:
+
+```bash
+$ mv cpools.h /path/to/project/include/
+$ mv cthreads.h /path/to/project/include/
+```
+
+### 2. Include the files
+
+To ensure your compiler can find the files, you must add the include directory to your compiler's include path.
+
+```bash
+$ gcc -I/path/to/project/include/ ...
+```
+
+> [!NOTE]
+> The flag may vary depending on your compiler.
 
 ## Usage
 
-### Creating a pool
+An example of how to use CPools can be found in the [tests](tests) directory. Showing all the features of CPools.
 
-```c
-#include <cpools.h>
+## Documentation
 
-int main() {
-  // Create a pool with with 10 max operations, with a 100ms delay for each operation
-  struct cpools_pool cpools;
-  struct cpools_operation operations[10] = { 0 };
+We still don't have a documentation for CPools, but we are working on it.
 
-  cpolls_init(&cpools, operations, 10, 100);
-}
-```
+## Support
 
-### Adding an operation and running the pool
+Any question or issue related to CPools or other PerformanC projects can be can be made in [PerformanC's Discord server](https://discord.gg/uPveNfTuCJ).
 
-```c
-void *operation(void *data) {
-  printf("Operation completed! ID: %s\n", (char *)data);
+For verified issues, please also create a GitHub issue for tracking the issue.
 
-  return (void *)"Operation completed!";
-}
+## Contributing
 
-void done(void *data) {
-  printf("Completed operation, returned: %s\n", (char *)data);
+CPools follows the PerformanC's [contribution guidelines](https://github.com/PerformanC/contributing). It is necessary to follow the guidelines to contribute to CPools and other PerformanC projects.
 
-  return;
-}
+## Projects using CPools
 
-...
+None yet
 
-  // Starts running the thread pool
-  cpolls_run(&cpools);
+## License
 
-  // Add 2 operations to the pool
-  cpolls_add_job(&cpools, operation, done, (void *)"1");
-  cpolls_add_job(&cpools, operation, done, (void *)"2");
-
-  // Stops pool
-  cpolls_stop(&cpolls);
-```
-
-Due to not using any dynamic memory allocation, you won't need to free any memory, as it is all stack allocated.
-
-### Output
-
-```text
-Operation completed! ID: 1
-Completed operation, returned: Operation completed!
-Operation completed! ID: 2
-Completed operation, returned: Operation completed!
-```
+CPools is licensed under PerformanC's License, which is a modified version of the MIT License, focusing on the protection of the source code and the rights of the PerformanC team over the source code.

@@ -1,8 +1,14 @@
 #include <stdio.h>
+#include <unistd.h>
+#include "../cthreads.h"
 
 #include "../cpools.h"
 
 void *operation(void *data) {
+  printf("Processing operation: %s by %lu\n", (char *)data, cthreads_thread_id(cthreads_self()));
+
+  sleep(2);
+
   printf("Operation completed! ID: %s\n", (char *)data);
 
   return (void *)"Operation completed!";
@@ -15,16 +21,22 @@ void done(void *data) {
 }
 
 int main(void) {
-  struct cpools_pool cpolls;
+  struct cpools_pool cpools;
   struct cpools_operation operations[10] = { 0 };
-  cpolls_init(&cpolls, operations, 10, 100);
+  struct cpools_thread threads[2] = { 0 };
+  cpools_init(&cpools, operations, 10, 100);
 
-  cpolls_run(&cpolls);
+  cpools_run(&cpools, threads, 2);
 
-  cpolls_add_job(&cpolls, operation, done, (void *)"1");
-  cpolls_add_job(&cpolls, operation, done, (void *)"2");
+  printf("Adding jobs...\n");
+  cpools_add_job(&cpools, operation, done, (void *)"1");
+  printf("Added job 1\n");
+  cpools_add_job(&cpools, operation, done, (void *)"2");
+  printf("Added job 2\n");
 
-  cpolls_stop(&cpolls);
+  while (cpools.operations_count != 0) { /* Noop */ }
+
+  cpools_stop(&cpools);
 
   return 0;
 }

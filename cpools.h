@@ -128,7 +128,7 @@ void cpools_stop(struct cpools_pool *cpools) {
   }
 
   while (i < cpools->threads_count) {
-    cthreads_join(&cpools->threads[i], NULL);
+    cthreads_thread_join(cpools->threads[i], NULL);
 
     i++;
   }

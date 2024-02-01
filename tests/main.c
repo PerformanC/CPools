@@ -5,7 +5,7 @@
 #include "../cpools.h"
 
 void *operation(void *data) {
-  printf("Processing operation: %s by %lu\n", (char *)data, cthreads_thread_id(cthreads_self()));
+  printf("Processing operation: %s by %lu\n", (char *)data, cthreads_thread_id(cthreads_thread_self()));
 
   sleep(2);
 

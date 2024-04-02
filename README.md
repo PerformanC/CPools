@@ -5,14 +5,10 @@ Fast and easy C89 thread pool library, using a [cross-platform threading library
 ## Features
 
 - Cross-platform
-- No dynamic memory allocation
 - C89 compatible
 
 > [!NOTE]
 > This library is experimental, may have bugs and may not work as expected.
-
-> [!WARNING]
-> `pthread` or `Windows Threads` may use dynamic memory allocation underneath.
 
 ## Installation
 

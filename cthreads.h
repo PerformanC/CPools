@@ -214,6 +214,14 @@ int cthreads_thread_join(struct cthreads_thread thread, void *code) {
   #endif
 }
 
+int cthreads_thread_cancel(struct cthreads_thread thread) {
+  #ifdef _WIN32
+    return TerminateThread(thread.wThread, 0) == 0;
+  #else
+    return pthread_cancel(thread.pThread);
+  #endif
+}
+
 int cthreads_thread_equal(struct cthreads_thread thread1, struct cthreads_thread thread2) {
   #ifdef _WIN32
     return thread1.wThread == thread2.wThread;

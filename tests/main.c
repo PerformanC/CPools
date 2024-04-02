@@ -22,11 +22,9 @@ void done(void *data) {
 
 int main(void) {
   struct cpools_pool cpools;
-  struct cpools_operation operations[10] = { 0 };
-  struct cpools_thread threads[2] = { 0 };
-  cpools_init(&cpools, operations, 10, 100);
+  cpools_init(&cpools, 2, 3);
 
-  cpools_run(&cpools, threads, 2);
+  cpools_run(&cpools);
 
   printf("Adding jobs...\n");
   cpools_add_job(&cpools, operation, done, (void *)"1");
@@ -34,7 +32,29 @@ int main(void) {
   cpools_add_job(&cpools, operation, done, (void *)"2");
   printf("Added job 2\n");
 
-  while (cpools.operations_count != 0) { /* Noop */ }
+  while (1) {
+    size_t i = 0;
+
+    while (i < cpools.threads_amount) {
+      struct cpools_thread *cpools_thread = &cpools.threads[i];
+
+      cthreads_mutex_lock(cpools_thread->info_mutex);
+
+      if (cpools_thread->operations_count == 0) {
+        cthreads_mutex_unlock(cpools_thread->info_mutex);
+
+        break;
+      }
+
+      i += cpools_thread->operations_count;
+
+      cthreads_mutex_unlock(cpools_thread->info_mutex);
+    }
+
+    if (i == 0) break;
+
+    sleep(1); /* Avoid high CPU usage */
+  }
 
   cpools_stop(&cpools);
 
